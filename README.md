@@ -1,5 +1,7 @@
 # rollup-plugin-markdown
 
+[![CircleCI](https://circleci.com/gh/jackfranklin/rollup-plugin-markdown.svg?style=svg)](https://circleci.com/gh/jackfranklin/rollup-plugin-markdown)
+
 A Rollup plugin to parse Markdown files.
 
 - [Showdown][showdown] is used to parse the Markdown
