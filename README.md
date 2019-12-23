@@ -38,3 +38,6 @@ export default {
 You can pass in two options: `include` and `exclude`, which are globs to limit which file(s) the plugin is applied to.
 
 The plugin will only parse `.md` files.
+
+[showdown]: https://github.com/showdownjs/showdown
+[gray-matter]: https://github.com/jonschlinkert/gray-matter
