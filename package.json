@@ -6,7 +6,9 @@
   "fles": [
     "src/"
   ],
-  "scripts": {},
+  "scripts": {
+    "test": "jest"
+  },
   "keywords": [
     "markdown",
     "rollup"
