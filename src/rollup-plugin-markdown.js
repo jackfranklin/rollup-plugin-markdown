@@ -9,7 +9,7 @@ const converter = new showdown.Converter({
 
 converter.setFlavor('github')
 
-export default function markdownPlugin(options = {}) {
+const markdownPlugin = (options = {}) => {
   const filter = createFilter(options.include, options.exclude)
 
   return {
@@ -37,3 +37,5 @@ export default function markdownPlugin(options = {}) {
     },
   }
 }
+
+module.exports = markdownPlugin

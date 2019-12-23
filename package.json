@@ -14,7 +14,9 @@
   "author": "Jack Franklin",
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^1.19.1"
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "rollup": "^1.27.14"
   },
   "dependencies": {
     "gray-matter": "^4.0.2",

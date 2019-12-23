@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`returns a module for the markdown file 1`] = `
+"<p>It's fair to say that React 16.8 and the introduction of<br />
+<a href=\\"https://reactjs.org/docs/hooks-intro.html\\">hooks</a> has really changed how we<br />
+write React. Hooks are one of those APIs that make you realise the flaws of the<br />
+previous approach <em>after</em> you stop using it. I remember being very skeptical of<br />
+hooks when they were first released, not thinking that the previous class based<br />
+design had many flaws, but I've since come to realise I was very wrong, and<br />
+hooks are a vast improvement on how we build React components. If you're<br />
+interested in comparing the old vs the new, I wrote a<br />
+<a href=\\"/refactoring-to-react-hooks/\\">blog post refactoring a component to use hooks</a><br />
+that offers a nice comparison.</p>"
+`;
