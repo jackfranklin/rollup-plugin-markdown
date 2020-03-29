@@ -28,6 +28,7 @@ const markdownPlugin = (options = {}) => {
         html,
         metadata: matterResult.data,
         filename: path.basename(id),
+        path: id,
       })
 
       return {
