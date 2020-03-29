@@ -28,7 +28,7 @@ const markdownPlugin = (options = {}) => {
         html,
         metadata: matterResult.data,
         filename: path.basename(id),
-        path,
+        path: id,
       })
 
       return {
