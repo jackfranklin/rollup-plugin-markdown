@@ -55,4 +55,5 @@ it('returns a module for the markdown file', async () => {
     intro: expect.any(String),
   })
   expect(requiredModule.filename).toEqual('test.md')
+  expect(requiredModule.path).toEqual(path.resolve(path.join(__dirname, 'fixtures/test.md')))
 })
