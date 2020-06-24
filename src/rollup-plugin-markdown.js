@@ -3,14 +3,21 @@ const path = require('path')
 const matter = require('gray-matter')
 const showdown = require('showdown')
 
-const converter = new showdown.Converter({
-  metadata: true,
-})
-
-converter.setFlavor('github')
+showdown.setFlavor('github')
 
 const markdownPlugin = (options = {}) => {
-  const filter = createFilter(options.include, options.exclude)
+  const {
+    include,
+    exclude,
+    showdown: showdownOpts = {}
+  } = options
+
+  const converter = new showdown.Converter({
+    metadata: true,
+    ...showdownOpts
+  })
+
+  const filter = createFilter(include, exclude)
 
   return {
     name: 'rollup-plugin-markdown',
