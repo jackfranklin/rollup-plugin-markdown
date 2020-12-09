@@ -9,8 +9,13 @@ const markdownPlugin = (options = {}) => {
   const {
     include,
     exclude,
-    showdown: showdownOpts = {}
+    showdownOptions: showdownOpts = {},
+    showdownExtensions: showdownExtns = []
   } = options
+
+  showdownExtns.forEach(extension => {
+    showdown.extension(extension.name, extension);
+  });
 
   const converter = new showdown.Converter({
     metadata: true,
