@@ -37,7 +37,11 @@ export default {
 }
 ```
 
-You can pass in two options: `include` and `exclude`, which are globs to limit which file(s) the plugin is applied to.
+You can pass in four options:
+
+- `include` and `exclude`, which are globs to limit which file(s) the plugin is applied to.
+- `showdownOptions`, which are options to pass to the Showdown converter.
+- `showdownExtensions`, which is an array of Showdown extensions.
 
 The plugin will only parse `.md` files.
 
