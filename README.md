@@ -47,11 +47,17 @@ The plugin will only parse `.md` files.
 
 [showdown]: https://github.com/showdownjs/showdown
 [gray-matter]: https://github.com/jonschlinkert/gray-matter
- 
+
 ## Changelog
 
+#### 0.3.0 [13th Jan 2021]
+
+- Allow Showdown options and extensions to be registered. Thanks to @mattfran and @arnorhs for their contributions.
+
 #### 0.2.0
+
 - expose full path to Markdown file as `.path` from the import.
 
 #### 0.1.0
+
 - Initial release
