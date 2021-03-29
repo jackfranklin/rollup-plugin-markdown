@@ -19,6 +19,7 @@ const markdownPlugin = (options = {}) => {
 
   const converter = new showdown.Converter({
     metadata: true,
+    extensions: showdownExtns.map(extension => extension.name),
     ...showdownOpts
   })
 
