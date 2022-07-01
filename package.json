@@ -16,6 +16,9 @@
   ],
   "author": "Jack Franklin",
   "license": "MIT",
+  "contributors": [
+    "Tommy Mitchell (https://tommymitchell.io)"
+  ],
   "devDependencies": {
     "jest": "^24.9.0",
     "prettier": "^1.19.1",

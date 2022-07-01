@@ -1,7 +1,10 @@
 ---
 layout: post
 title: 'Avoiding recursive useEffect hooks in React'
-intro: A short post today about an easy tactic to avoid your useEffect calls becoming recursive when setting state.
+intro: A short post today about an easy tactic to avoid your *useEffect* calls becoming recursive when setting state.
+about:
+ - author: John Doe
+ - keywords: [React, useEffect, recursion]
 ---
 
 It's fair to say that React 16.8 and the introduction of

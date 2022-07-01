@@ -10,16 +10,18 @@ const markdownPlugin = (options = {}) => {
     include,
     exclude,
     showdownOptions: showdownOpts = {},
-    showdownExtensions: showdownExtns = []
+    showdownExtensions: showdownExtns = [],
+    allowImports = true,
+    parseFrontMatterAsMarkdown = false,
   } = options
 
   showdownExtns.forEach(extension => {
-    showdown.extension(extension.name, extension);
-  });
+    showdown.extension(extension.name, extension)
+  })
 
   const converter = new showdown.Converter({
     metadata: true,
-    ...showdownOpts
+    ...showdownOpts,
   })
 
   const filter = createFilter(include, exclude)
@@ -36,6 +38,19 @@ const markdownPlugin = (options = {}) => {
       const matterResult = matter(code)
       const html = converter.makeHtml(matterResult.content)
 
+      if (parseFrontMatterAsMarkdown) {
+        const parseFrontMatterNested = frontMatter => {
+          Object.entries(frontMatter).forEach(([key, value]) => {
+            // recurse
+            if (value && typeof value === 'object') parseFrontMatterNested(value)
+            // convert markdown and remove <p>
+            else frontMatter[key] = converter.makeHtml(value).replace(/<\/?p[^>]*>/g, '')
+          })
+        }
+
+        parseFrontMatterNested(matterResult.data)
+      }
+
       const exportFromModule = JSON.stringify({
         html,
         metadata: matterResult.data,
@@ -44,7 +59,7 @@ const markdownPlugin = (options = {}) => {
       })
 
       return {
-        code: `export default ${exportFromModule}`,
+        code: allowImports ? `export default ${exportFromModule}` : exportFromModule,
         map: { mappings: '' },
       }
     },
