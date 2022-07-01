@@ -3,7 +3,7 @@
   "version": "0.3.0",
   "description": "Parse markdown files and import them with Rollup",
   "main": "src/rollup-plugin-markdown.js",
-  "fles": [
+  "files": [
     "src/"
   ],
   "scripts": {
@@ -11,18 +11,19 @@
   },
   "keywords": [
     "markdown",
-    "rollup"
+    "rollup",
+    "rollup-plugin"
   ],
   "author": "Jack Franklin",
   "license": "MIT",
   "devDependencies": {
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
-    "rollup": "^1.27.14"
+    "rollup": "^2.68.0"
   },
   "dependencies": {
     "gray-matter": "^4.0.2",
     "rollup-pluginutils": "^2.8.2",
-    "showdown": "^1.9.1"
+    "showdown": "^2.1.0"
   }
 }
