@@ -43,7 +43,11 @@ const bundleFileAndGetCode = async rollupConfig => {
 it('returns a module for the markdown file', async () => {
   const code = await bundleFileAndGetCode({
     input: 'fixtures/test.md',
-    plugins: [markdownPlugin()],
+    plugins: [
+      markdownPlugin({
+        parseFrontMatterAsMarkdown: true,
+      }),
+    ],
   })
 
   const requiredModule = requireFromString(code)
@@ -52,8 +56,31 @@ it('returns a module for the markdown file', async () => {
   expect(requiredModule.metadata).toEqual({
     layout: 'post',
     title: 'Avoiding recursive useEffect hooks in React',
-    intro: expect.any(String),
+    intro: 'A short post today about an easy tactic to avoid your <em>useEffect</em> calls becoming recursive when setting state.',
+    about: [
+      {
+        author: 'John Doe'
+      },
+      {
+        keywords: ['React', 'useEffect', 'recursion']
+      },
+    ]
   })
   expect(requiredModule.filename).toEqual('test.md')
   expect(requiredModule.path).toEqual(path.resolve(path.join(__dirname, 'fixtures/test.md')))
+})
+
+it('does not return a module for the markdown file', async () => {
+  await expect(
+    bundleFileAndGetCode({
+      input: 'fixtures/test.md',
+      plugins: [
+        markdownPlugin({
+          allowImports: false
+        })
+      ],
+    })
+  ).rejects.toThrow(
+    'Unexpected token (Note that you need plugins to import files that are not JavaScript)'
+  )
 })
