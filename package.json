@@ -25,6 +25,7 @@
     "rollup": "^2.68.0"
   },
   "dependencies": {
+    "@types/showdown": "^2.0.0",
     "gray-matter": "^4.0.2",
     "rollup-pluginutils": "^2.8.2",
     "showdown": "^2.1.0"
