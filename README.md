@@ -62,6 +62,11 @@ The plugin will only parse `.md` files.
 
 ## Changelog
 
+#### 0.4.0 [4th July 2022]
+
+- [Add TypeScript definitions](https://github.com/jackfranklin/rollup-plugin-markdown/pull/17) - thanks @tommy-mitchell for the PR.
+- [Add options for parsing front matter and piping through Rollup](https://github.com/jackfranklin/rollup-plugin-markdown/pull/16) - thanks @tommy-mitchell for the PR.
+
 #### 0.3.0 [13th Jan 2021]
 
 - Allow Showdown options and extensions to be registered. Thanks to @mattfran and @arnorhs for their contributions.
