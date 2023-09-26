@@ -57,6 +57,23 @@ You can pass in six options:
 
 The plugin will only parse `.md` files.
 
+## TypeScript
+
+You can use the following declaration to satisfy the TypeScript compiler:
+
+```ts
+declare module '*.md' {
+  const styles: {
+    html: string
+    filename: string
+    path: string
+    metadata: Record<string, string>
+  }
+
+  export default styles
+}
+```
+
 [showdown]: https://github.com/showdownjs/showdown
 [gray-matter]: https://github.com/jonschlinkert/gray-matter
 
