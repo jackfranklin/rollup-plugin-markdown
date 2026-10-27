@@ -1,27 +1,32 @@
-const { createFilter } = require('rollup-pluginutils')
+const { createFilter } = require('@rollup/pluginutils')
 const path = require('path')
 const matter = require('gray-matter')
-const showdown = require('showdown')
-
-showdown.setFlavor('github')
+const MarkdownIt = require('markdown-it')
 
 const markdownPlugin = (options = {}) => {
   const {
     include,
     exclude,
-    showdownOptions: showdownOpts = {},
-    showdownExtensions: showdownExtns = [],
+    markdownItOptions = {},
+    markdownItPlugins = [],
     allowImports = true,
     parseFrontMatterAsMarkdown = false,
   } = options
 
-  showdownExtns.forEach(extension => {
-    showdown.extension(extension.name, extension)
+  // html: raw HTML (including custom elements) passes through untouched
+  // linkify: bare URLs become links, as on GitHub
+  // breaks: single newlines become <br>, matching the showdown output of <= 0.4
+  const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    breaks: true,
+    ...markdownItOptions,
   })
 
-  const converter = new showdown.Converter({
-    metadata: true,
-    ...showdownOpts,
+  markdownItPlugins.forEach(plugin => {
+    // plugins are either `plugin` or `[plugin, ...params]`
+    const [fn, ...params] = Array.isArray(plugin) ? plugin : [plugin]
+    md.use(fn, ...params)
   })
 
   const filter = createFilter(include, exclude)
@@ -29,22 +34,22 @@ const markdownPlugin = (options = {}) => {
   return {
     name: 'rollup-plugin-markdown',
     transform(code, id) {
-      if (!filter(id) === -1) return
+      if (!filter(id)) return
 
       const extension = path.extname(id)
 
       if (extension !== '.md') return
 
       const matterResult = matter(code)
-      const html = converter.makeHtml(matterResult.content)
+      const html = md.render(matterResult.content)
 
       if (parseFrontMatterAsMarkdown) {
         const parseFrontMatterNested = frontMatter => {
           Object.entries(frontMatter).forEach(([key, value]) => {
             // recurse
             if (value && typeof value === 'object') parseFrontMatterNested(value)
-            // convert markdown and remove <p>
-            else frontMatter[key] = converter.makeHtml(value).replace(/<\/?p[^>]*>/g, '')
+            // convert markdown to inline HTML; leave numbers, booleans etc. alone
+            else if (typeof value === 'string') frontMatter[key] = md.renderInline(value)
           })
         }
 
@@ -60,7 +65,7 @@ const markdownPlugin = (options = {}) => {
 
       return {
         code: allowImports ? `export default ${exportFromModule}` : exportFromModule,
-        map: { mappings: '' },
+        map: null,
       }
     },
   }

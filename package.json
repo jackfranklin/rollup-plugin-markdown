@@ -3,6 +3,7 @@
   "version": "0.4.0",
   "description": "Parse markdown files and import them with Rollup",
   "main": "src/rollup-plugin-markdown.js",
+  "types": "src/index.d.ts",
   "files": [
     "src/"
   ],
@@ -25,9 +26,8 @@
     "rollup": "^2.68.0"
   },
   "dependencies": {
-    "@types/showdown": "^2.0.0",
+    "@rollup/pluginutils": "^5.5.1",
     "gray-matter": "^4.0.2",
-    "rollup-pluginutils": "^2.8.2",
-    "showdown": "^2.1.0"
+    "markdown-it": "^15.0.3"
   }
 }

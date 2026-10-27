@@ -4,7 +4,7 @@
 
 A Rollup plugin to parse Markdown files. The parsed Markdown can either be imported as a JavaScript module, or piped through the Rollup build process.
 
-- [Showdown][showdown] is used to parse a Markdown file.
+- [markdown-it][markdown-it] is used to parse a Markdown file.
 - [Gray Matter][gray-matter] is used to parse front-matter from a Markdown file.
 
 ## Install
@@ -38,8 +38,8 @@ export default {
     markdown({
       include?: 'src/md/*.md',
       exclude?: 'README.md',
-      showdownOptions?: '',
-      showdownExtensions?: '',
+      markdownItOptions?: {},
+      markdownItPlugins?: [],
       allowImports?: true,
       parseFrontMatterAsMarkdown?: false
     })
@@ -50,16 +50,32 @@ export default {
 You can pass in six options:
 
 - `include` and `exclude`, which are globs to limit which file(s) the plugin is applied to.
-- `showdownOptions`, which are options to pass to the Showdown converter.
-- `showdownExtensions`, which is an array of Showdown extensions.
+- `markdownItOptions`, which are [options to pass to markdown-it](https://markdown-it.github.io/markdown-it/#MarkdownIt.new). They are merged over the plugin's defaults of `{ html: true, linkify: true, breaks: true }`.
+- `markdownItPlugins`, which is an array of [markdown-it plugins](https://www.npmjs.com/search?q=keywords:markdown-it-plugin). Pass `[plugin, ...params]` to give a plugin parameters.
 - `allowImports`, a flag to tell the plugin whether or not to export the Markdown files as JavaScript modules.
-- `parseFrontMatterAsMarkdown`, a flag that converts front-matter values into inline HTML (without enclosing `<p>/<p>` tags).
+- `parseFrontMatterAsMarkdown`, a flag that converts string front-matter values into inline HTML (without enclosing `<p></p>` tags).
 
 The plugin will only parse `.md` files.
 
+Raw HTML in your Markdown, including custom elements, is passed through untouched. The output is not sanitised, so only use the plugin on Markdown you trust.
+
+### Heading IDs and task lists
+
+Showdown, which this plugin used before 0.5.0, added `id` attributes to headings and rendered `- [ ]` task lists as checkboxes. markdown-it does neither by default; add plugins if you need them:
+
+```js
+import markdown from '@jackfranklin/rollup-plugin-markdown'
+import anchor from 'markdown-it-anchor'
+import taskLists from 'markdown-it-task-lists'
+
+markdown({
+  markdownItPlugins: [anchor, taskLists],
+})
+```
+
 ## TypeScript
 
-You can use the following declaration to satisfy the TypeScript compiler:
+The plugin ships its own type definitions. To import `.md` files from TypeScript, you can use the following declaration:
 
 ```ts
 declare module '*.md' {
@@ -74,10 +90,21 @@ declare module '*.md' {
 }
 ```
 
-[showdown]: https://github.com/showdownjs/showdown
+[markdown-it]: https://github.com/markdown-it/markdown-it
 [gray-matter]: https://github.com/jonschlinkert/gray-matter
 
 ## Changelog
+
+#### Unreleased (breaking)
+
+- Replace Showdown with markdown-it. Showdown is unmaintained and has unfixed security advisories ([GHSA-rmmh-p597-ppvv](https://github.com/advisories/GHSA-rmmh-p597-ppvv), [GHSA-cr32-g25g-vxjj](https://github.com/advisories/GHSA-cr32-g25g-vxjj), [GHSA-22g5-r2x5-97cx](https://github.com/advisories/GHSA-22g5-r2x5-97cx)).
+  - **Breaking:** `showdownOptions` and `showdownExtensions` are replaced by `markdownItOptions` and `markdownItPlugins`.
+  - **Breaking:** headings no longer get `id` attributes and task lists are no longer rendered as checkboxes. See [Heading IDs and task lists](#heading-ids-and-task-lists) to restore them.
+  - Tables, raw HTML, autolinked URLs and single-newline line breaks work as before. Strikethrough now renders as `<s>` rather than `<del>`.
+- Fix `include` and `exclude`, which were previously ignored.
+- `parseFrontMatterAsMarkdown` no longer throws on front-matter values that are not strings (numbers, booleans, `null`); they are left as they are.
+- Type definitions are now found by TypeScript (`types` in `package.json`), and cover `allowImports` and `parseFrontMatterAsMarkdown`.
+- Switch from `rollup-pluginutils` to `@rollup/pluginutils`, and return `map: null` rather than an empty source map.
 
 #### 0.4.0 [4th July 2022]
 

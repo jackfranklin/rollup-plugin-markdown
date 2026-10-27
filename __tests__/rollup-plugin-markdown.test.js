@@ -84,3 +84,67 @@ it('does not return a module for the markdown file', async () => {
     'Unexpected token (Note that you need plugins to import files that are not JavaScript)'
   )
 })
+
+const transformMarkdown = (markdown, options, id = '/project/src/test.md') =>
+  markdownPlugin(options).transform(markdown, id)
+
+const htmlFor = (markdown, options) =>
+  JSON.parse(transformMarkdown(markdown, options).code.replace(/^export default /, '')).html
+
+it('respects include and exclude', () => {
+  expect(transformMarkdown('# hi', { exclude: '**/test.md' })).toBeUndefined()
+  expect(transformMarkdown('# hi', { include: 'docs/**' })).toBeUndefined()
+  expect(transformMarkdown('# hi', { include: '**/src/*.md' })).toBeDefined()
+})
+
+it('ignores files that are not markdown', () => {
+  expect(transformMarkdown('# hi', {}, '/project/src/test.js')).toBeUndefined()
+})
+
+it('returns no source map', () => {
+  expect(transformMarkdown('# hi').map).toBeNull()
+})
+
+it('passes raw HTML, including custom elements, through untouched', () => {
+  expect(htmlFor('Press <help-key>WASD</help-key> to move.\n\n<game-key>h</game-key>')).toEqual(
+    '<p>Press <help-key>WASD</help-key> to move.</p>\n<p><game-key>h</game-key></p>\n'
+  )
+})
+
+it('renders GitHub-style tables', () => {
+  expect(htmlFor('| Speed | Cost |\n|:--|--:|\n| Fast | 3 |')).toMatchSnapshot()
+})
+
+it('leaves non-string front matter alone when parsing it as markdown', () => {
+  const { code } = transformMarkdown('---\ncount: 3\ndraft: false\nnothing:\ntitle: A *b*\n---\nhi', {
+    parseFrontMatterAsMarkdown: true,
+  })
+
+  expect(JSON.parse(code.replace(/^export default /, '')).metadata).toEqual({
+    count: 3,
+    draft: false,
+    nothing: null,
+    title: 'A <em>b</em>',
+  })
+})
+
+it('accepts markdown-it options', () => {
+  expect(htmlFor('one\ntwo', { markdownItOptions: { breaks: false } })).toEqual('<p>one\ntwo</p>\n')
+})
+
+it('accepts markdown-it plugins, with or without params', () => {
+  const shout = (md, suffix = '!') => {
+    md.core.ruler.push('shout', state => {
+      state.tokens.forEach(token => {
+        if (token.type === 'inline') {
+          token.children.forEach(child => {
+            if (child.type === 'text') child.content = child.content.toUpperCase() + suffix
+          })
+        }
+      })
+    })
+  }
+
+  expect(htmlFor('hi', { markdownItPlugins: [shout] })).toEqual('<p>HI!</p>\n')
+  expect(htmlFor('hi', { markdownItPlugins: [[shout, '?']] })).toEqual('<p>HI?</p>\n')
+})
