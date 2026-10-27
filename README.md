@@ -1,18 +1,18 @@
 # rollup-plugin-markdown
 
-[![CircleCI](https://circleci.com/gh/jackfranklin/rollup-plugin-markdown.svg?style=svg)](https://circleci.com/gh/jackfranklin/rollup-plugin-markdown)
+[![CI](https://github.com/jackfranklin/rollup-plugin-markdown/actions/workflows/ci.yml/badge.svg)](https://github.com/jackfranklin/rollup-plugin-markdown/actions/workflows/ci.yml)
 
 A Rollup plugin to parse Markdown files. The parsed Markdown can either be imported as a JavaScript module, or piped through the Rollup build process.
 
 - [markdown-it][markdown-it] is used to parse a Markdown file.
-- [Gray Matter][gray-matter] is used to parse front-matter from a Markdown file.
+- YAML front matter (between `---` lines at the top of the file) is parsed with [js-yaml][js-yaml].
+
+The plugin is an ES module and needs Node.js 22 or later. It works with Rollup 3 and 4.
 
 ## Install
 
 ```text
 npm install --save-dev @jackfranklin/rollup-plugin-markdown
-
-yarn add --dev @jackfranklin/rollup-plugin-markdown
 ```
 
 ## Example module output
@@ -75,23 +75,34 @@ markdown({
 
 ## TypeScript
 
-The plugin ships its own type definitions. To import `.md` files from TypeScript, you can use the following declaration:
+The plugin ships its own type definitions. To type `import post from './post.md'`, add the plugin's module declaration to your `tsconfig.json`:
 
-```ts
-declare module '*.md' {
-  const styles: {
-    html: string
-    filename: string
-    path: string
-    metadata: Record<string, string>
+```json
+{
+  "compilerOptions": {
+    "types": ["@jackfranklin/rollup-plugin-markdown/md"]
   }
-
-  export default styles
 }
 ```
 
+or reference it from any `.d.ts` file:
+
+```ts
+/// <reference types="@jackfranklin/rollup-plugin-markdown/md" />
+```
+
+TypeScript needs `"moduleResolution"` set to `"nodenext"`, `"node16"` or `"bundler"` to find the types.
+
+## Development
+
+```text
+npm test           # node:test
+npm run typecheck  # tsc
+npm run lint       # prettier --check
+```
+
 [markdown-it]: https://github.com/markdown-it/markdown-it
-[gray-matter]: https://github.com/jonschlinkert/gray-matter
+[js-yaml]: https://github.com/nodeca/js-yaml
 
 ## Changelog
 
@@ -101,10 +112,13 @@ declare module '*.md' {
   - **Breaking:** `showdownOptions` and `showdownExtensions` are replaced by `markdownItOptions` and `markdownItPlugins`.
   - **Breaking:** headings no longer get `id` attributes and task lists are no longer rendered as checkboxes. See [Heading IDs and task lists](#heading-ids-and-task-lists) to restore them.
   - Tables, raw HTML, autolinked URLs and single-newline line breaks work as before. Strikethrough now renders as `<s>` rather than `<del>`.
+- **Breaking:** the plugin is now an ES module only, and needs Node.js 22 or later. Use `import markdown from '@jackfranklin/rollup-plugin-markdown'`. CommonJS config files can still `require()` it on Node.js 22.12+, as `require(...).default`.
+- **Breaking:** replace gray-matter with a small YAML front-matter parser using js-yaml 5. Front matter is parsed as before (including dates and `<<` merge keys), but only YAML front matter is supported: `---js`, `---toml` etc. are no longer recognised, and a file that opens with `---` but never closes it is treated as Markdown rather than front matter.
 - Fix `include` and `exclude`, which were previously ignored.
 - `parseFrontMatterAsMarkdown` no longer throws on front-matter values that are not strings (numbers, booleans, `null`); they are left as they are.
-- Type definitions are now found by TypeScript (`types` in `package.json`), and cover `allowImports` and `parseFrontMatterAsMarkdown`.
+- Type definitions are now found by TypeScript, cover `allowImports` and `parseFrontMatterAsMarkdown`, and include a `*.md` module declaration (`@jackfranklin/rollup-plugin-markdown/md`).
 - Switch from `rollup-pluginutils` to `@rollup/pluginutils`, and return `map: null` rather than an empty source map.
+- Rollup is now an optional peer dependency: `^3.0.0 || ^4.0.0`.
 
 #### 0.4.0 [4th July 2022]
 
