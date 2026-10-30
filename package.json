@@ -2,12 +2,32 @@
   "name": "@jackfranklin/rollup-plugin-markdown",
   "version": "0.4.0",
   "description": "Parse markdown files and import them with Rollup",
-  "main": "src/rollup-plugin-markdown.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./md": {
+      "types": "./src/md.d.ts"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "src/"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "test": "jest"
+    "test": "node --test test/*.test.js",
+    "typecheck": "tsc",
+    "format": "prettier --write .",
+    "lint": "prettier --check ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackfranklin/rollup-plugin-markdown.git"
   },
   "keywords": [
     "markdown",
@@ -19,15 +39,23 @@
   "contributors": [
     "Tommy Mitchell (https://tommymitchell.io)"
   ],
+  "peerDependencies": {
+    "rollup": "^3.0.0 || ^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "rollup": {
+      "optional": true
+    }
+  },
   "devDependencies": {
-    "jest": "^24.9.0",
-    "prettier": "^1.19.1",
-    "rollup": "^2.68.0"
+    "@types/node": "^22.20.5",
+    "prettier": "^3.9.10",
+    "rollup": "^4.65.1",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@types/showdown": "^2.0.0",
-    "gray-matter": "^4.0.2",
-    "rollup-pluginutils": "^2.8.2",
-    "showdown": "^2.1.0"
+    "@rollup/pluginutils": "^5.5.1",
+    "js-yaml": "^5.5.0",
+    "markdown-it": "^15.0.3"
   }
 }
