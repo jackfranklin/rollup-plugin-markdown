@@ -106,7 +106,7 @@ npm run lint       # prettier --check
 
 ## Changelog
 
-#### Unreleased (breaking)
+#### 0.5.0 [30th October 2026] (breaking)
 
 - Replace Showdown with markdown-it. Showdown is unmaintained and has unfixed security advisories ([GHSA-rmmh-p597-ppvv](https://github.com/advisories/GHSA-rmmh-p597-ppvv), [GHSA-cr32-g25g-vxjj](https://github.com/advisories/GHSA-cr32-g25g-vxjj), [GHSA-22g5-r2x5-97cx](https://github.com/advisories/GHSA-22g5-r2x5-97cx)).
   - **Breaking:** `showdownOptions` and `showdownExtensions` are replaced by `markdownItOptions` and `markdownItPlugins`.
